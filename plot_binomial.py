@@ -43,16 +43,16 @@ if cap_at_max:
 
 # convert data to something that plotly can draw
 data = {}
-data["base"] = raw_data[0]
-labels = ["base"]
+data["no successes"] = raw_data[0]
 for line_idx in range(1, max_successes + 1):
 	if line_idx == max_successes and cap_at_max:
-		step_name = "final step"
+		step_name = "{} or more".format(max_successes)
+	elif line_idx == 1:
+		step_name = "1 success"
 	else:
-		step_name = "step{}".format(line_idx)
+		step_name = "{} successes".format(line_idx)
 
 	data[step_name] = raw_data[line_idx]
-	labels.append(step_name)
 
 # draw
 labels = {"index":"trial", "value":"probability"}
