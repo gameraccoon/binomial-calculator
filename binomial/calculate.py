@@ -2,6 +2,7 @@
 
 from enum import Enum
 import math
+import sys
 
 def get_binomial_probability(single_trial_success_chance, trials_count, number_of_successes):
 	number_of_combinations = math.factorial(trials_count)/(math.factorial(number_of_successes) * math.factorial(trials_count - number_of_successes))
