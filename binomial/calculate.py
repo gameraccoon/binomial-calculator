@@ -25,8 +25,11 @@ def get_cumulative_probability(single_trial_success_chance, trials_count, number
 
 
 def get_cumulative_minus_binomial_probability(single_trial_success_chance, trials_count, number_of_successes):
-	cumulative_probability, binomial_probability = get_cumulative_and_binomial_probabilities(single_trial_success_chance, trials_count, number_of_successes)
-	return cumulative_probability - binomial_probability
+	# skip the last step
+	cumulative_probability = 0.0
+	for i in range(0, number_of_successes):
+		cumulative_probability += get_binomial_probability(single_trial_success_chance, trials_count, i)
+	return cumulative_probability
 
 
 def find_probability_with_function(function, target_probability, max_error, sign):
@@ -69,3 +72,16 @@ def find_probability(check_type, trials_count, number_of_successes, target_proba
 		sys.exit("Unknown type of searching probability: {}".format(check_type))
 
 	return find_probability_with_function(binomial_function, target_probability, max_error, sign)
+
+
+def find_average(single_trial_success_chance, target_successes, max_error = 0.0):
+	last_prob = 0.0
+	prob = 0.0
+	result = 0.0
+	index = target_successes
+	while prob < 1.0 - max_error:
+		last_prob = prob
+		prob = 1.0 - get_cumulative_minus_binomial_probability(single_trial_success_chance, index, target_successes)
+		result += (prob - last_prob) * index
+		index += 1
+	return result
