@@ -85,3 +85,8 @@ def find_average(single_trial_success_chance, target_successes, max_error = 0.0)
 		result += (prob - last_prob) * index
 		index += 1
 	return result
+
+
+def find_single_trial_probability_by_average_trials(target_successes, target_average_trials_count, max_error):
+	search_function = lambda a : find_average(a, target_successes, max_error)
+	return find_probability_with_function(search_function, target_average_trials_count, 1.0, 1.0)
