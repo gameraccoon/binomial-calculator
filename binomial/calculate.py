@@ -4,31 +4,31 @@ from enum import Enum
 import math
 import sys
 
-def get_binomial_probability(single_trial_success_chance, trials_count, number_of_successes):
+def get_binomial_probability(single_trial_success_probability, trials_count, number_of_successes):
 	number_of_combinations = math.factorial(trials_count)/(math.factorial(number_of_successes) * math.factorial(trials_count - number_of_successes))
-	return number_of_combinations * math.pow(single_trial_success_chance, number_of_successes) * math.pow(1.0 - single_trial_success_chance, trials_count - number_of_successes)
+	return number_of_combinations * math.pow(single_trial_success_probability, number_of_successes) * math.pow(1.0 - single_trial_success_probability, trials_count - number_of_successes)
 
 
-def get_cumulative_and_binomial_probabilities(single_trial_success_chance, trials_count, number_of_successes):
-	binomial_probability = get_binomial_probability(single_trial_success_chance, trials_count, number_of_successes)
+def get_cumulative_and_binomial_probabilities(single_trial_success_probability, trials_count, number_of_successes):
+	binomial_probability = get_binomial_probability(single_trial_success_probability, trials_count, number_of_successes)
 
 	cumulative_probability = binomial_probability
 	for i in range(0, number_of_successes):
-		cumulative_probability += get_binomial_probability(single_trial_success_chance, trials_count, i)
+		cumulative_probability += get_binomial_probability(single_trial_success_probability, trials_count, i)
 
 	return cumulative_probability, binomial_probability
 
 
-def get_cumulative_probability(single_trial_success_chance, trials_count, number_of_successes):
-	cumulative_probability, _ = get_cumulative_and_binomial_probabilities(single_trial_success_chance, trials_count, number_of_successes)
+def get_cumulative_probability(single_trial_success_probability, trials_count, number_of_successes):
+	cumulative_probability, _ = get_cumulative_and_binomial_probabilities(single_trial_success_probability, trials_count, number_of_successes)
 	return cumulative_probability
 
 
-def get_cumulative_minus_binomial_probability(single_trial_success_chance, trials_count, number_of_successes):
+def get_cumulative_minus_binomial_probability(single_trial_success_probability, trials_count, number_of_successes):
 	# skip the last step
 	cumulative_probability = 0.0
 	for i in range(0, number_of_successes):
-		cumulative_probability += get_binomial_probability(single_trial_success_chance, trials_count, i)
+		cumulative_probability += get_binomial_probability(single_trial_success_probability, trials_count, i)
 	return cumulative_probability
 
 
@@ -74,14 +74,14 @@ def find_probability(check_type, trials_count, number_of_successes, target_proba
 	return find_probability_with_function(binomial_function, target_probability, max_error, sign)
 
 
-def find_average(single_trial_success_chance, target_successes, max_error = 0.0):
+def find_average(single_trial_success_probability, target_successes, max_error = 0.0):
 	last_prob = 0.0
 	prob = 0.0
 	result = 0.0
 	index = target_successes
 	while prob < 1.0 - max_error:
 		last_prob = prob
-		prob = 1.0 - get_cumulative_minus_binomial_probability(single_trial_success_chance, index, target_successes)
+		prob = 1.0 - get_cumulative_minus_binomial_probability(single_trial_success_probability, index, target_successes)
 		result += (prob - last_prob) * index
 		index += 1
 	return result

@@ -8,7 +8,7 @@ import sys
 # default parameters
 trials = 150
 max_successes = 4
-single_trial_success_chance = 0.08
+single_trial_success_probability = 0.08
 cap_at_max = True
 graph_type = "line" # "line" or "area"
 
@@ -16,7 +16,7 @@ graph_type = "line" # "line" or "area"
 if len(sys.argv) > 3:
 	trials = int(sys.argv[1])
 	max_successes = int(sys.argv[2])
-	single_trial_success_chance = float(sys.argv[3])
+	single_trial_success_probability = float(sys.argv[3])
 	if len(sys.argv) > 4:
 		graph_type = sys.argv[4]
 
@@ -32,14 +32,14 @@ for line_idx in range(0, last_iteration_idx + 1):
 	for step_idx in range(0, line_idx):
 		raw_data[line_idx].append(0.0)
 	for step_idx in range(line_idx, trials + 1):
-		raw_data[line_idx].append(get_binomial_probability(single_trial_success_chance, step_idx, line_idx))
+		raw_data[line_idx].append(get_binomial_probability(single_trial_success_probability, step_idx, line_idx))
 
 # if needed, set last success values with cumulative values for "at least" instead of "exactly"
 if cap_at_max:
 	for step_idx in range(0, max_successes):
 		raw_data[max_successes].append(0.0)
 	for step_idx in range(max_successes, trials + 1):
-		raw_data[max_successes].append(1.0 - get_cumulative_minus_binomial_probability(single_trial_success_chance, step_idx, max_successes))
+		raw_data[max_successes].append(1.0 - get_cumulative_minus_binomial_probability(single_trial_success_probability, step_idx, max_successes))
 
 # convert data to something that plotly can draw
 data = {}
@@ -56,7 +56,7 @@ for line_idx in range(1, max_successes + 1):
 
 # draw
 labels = {"index":"trial", "value":"probability"}
-title = "Probability to have specific number of successes per trials, with single trial success probability of {}".format(single_trial_success_chance)
+title = "Probability to have specific number of successes per trials (single trial success probability is {})".format(single_trial_success_probability)
 if graph_type == "line":
 	fig = px.line(data, labels=labels, title=title)
 elif graph_type == "area":

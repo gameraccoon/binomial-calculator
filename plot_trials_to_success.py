@@ -10,7 +10,7 @@ import sys
 # default parameters
 trials = 150
 max_successes = 4
-single_trial_success_chance = 0.08
+single_trial_success_probability = 0.08
 percentile_1 = 0.25
 percentile_3 = 0.75
 
@@ -18,7 +18,7 @@ percentile_3 = 0.75
 if len(sys.argv) > 3:
 	trials = int(sys.argv[1])
 	max_successes = int(sys.argv[2])
-	single_trial_success_chance = float(sys.argv[3])
+	single_trial_success_probability = float(sys.argv[3])
 
 	if len(sys.argv) > 5:
 		percentile_1 = float(sys.argv[4]) / 100.0
@@ -36,7 +36,7 @@ for step_idx in range(0, max_successes):
 	raw_data.append(0.0)
 last_step_probability = 0.0
 for step_idx in range(max_successes, trials + 1):
-	this_step_probability = 1.0 - get_cumulative_minus_binomial_probability(single_trial_success_chance, step_idx, max_successes)
+	this_step_probability = 1.0 - get_cumulative_minus_binomial_probability(single_trial_success_probability, step_idx, max_successes)
 	raw_data.append(this_step_probability - last_step_probability)
 
 	if last_step_probability < percentile_1 and this_step_probability > percentile_1:
@@ -52,13 +52,13 @@ for step_idx in range(max_successes, trials + 1):
 
 print("calculate average")
 
-avg = int(round(find_average(single_trial_success_chance, max_successes, 0.00001)))
+avg = int(round(find_average(single_trial_success_probability, max_successes, 0.00001)))
 
 print("prepare plot data")
 
 # draw
 labels = {"index":"trial", "value":"probability"}
-title = "Probability to reach {} successes on a given trial, with single trial success probability of {}".format(max_successes, single_trial_success_chance)
+title = "Probability to reach {} successes on a given trial (single trial success probability is {})".format(max_successes, single_trial_success_probability)
 
 fig = px.line(raw_data.tolist(), labels=labels, title=title)
 
