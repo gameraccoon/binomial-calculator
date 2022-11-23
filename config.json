@@ -1,0 +1,12 @@
+{
+	"single_trial_success_probability": 0.33333333,
+	"max_successes": 10,
+	"cap_at_max": true,
+	"measure_in_time": true,
+	"time_units": "minutes",
+	"trials_per_time_unit": 0.5,
+	"max_trials_or_time": 60,
+	"target_trials_or_time": 140,
+	"graph_type": "line",
+	"percentiles": [1, 5, 25, 50, 75, 95, 99]
+}

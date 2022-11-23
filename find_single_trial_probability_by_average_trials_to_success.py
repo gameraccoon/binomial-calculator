@@ -16,4 +16,4 @@ if len(sys.argv) > 2:
 
 single_trial_success_probability = find_single_trial_probability_by_average_trials(successes, target_trials, max_error)
 
-print("With single trial success probability of {} we need on average {} trials to have {} successes".format(single_trial_success_probability, target_trials, successes))
+print("To have {} successes {} trials are needed on average if single trial success probability is {}".format(successes, target_trials, single_trial_success_probability))
