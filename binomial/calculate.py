@@ -4,8 +4,16 @@ from enum import Enum
 import math
 import sys
 
+
+def factorial_from(number_from, number):
+	factorial = 1.0
+	for i in range(number_from + 1, number + 1):
+		factorial *= i
+	return factorial
+
+
 def get_binomial_probability(single_trial_success_probability, trials_count, number_of_successes):
-	number_of_combinations = math.factorial(trials_count)/(math.factorial(number_of_successes) * math.factorial(trials_count - number_of_successes))
+	number_of_combinations = factorial_from(trials_count - number_of_successes, trials_count)/math.factorial(number_of_successes)
 	return number_of_combinations * math.pow(single_trial_success_probability, number_of_successes) * math.pow(1.0 - single_trial_success_probability, trials_count - number_of_successes)
 
 
