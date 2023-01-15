@@ -82,19 +82,27 @@ def find_probability(check_type, trials_count, number_of_successes, target_proba
 	return find_probability_with_function(binomial_function, target_probability, max_error, sign)
 
 
-def find_average(single_trial_success_probability, target_successes, max_error = 0.0):
+def find_average_probability(probability_fn, max_error = 0.0):
 	last_prob = 0.0
 	prob = 0.0
 	result = 0.0
-	index = target_successes
+	index = 1
 	while prob < 1.0 - max_error:
 		last_prob = prob
-		prob = 1.0 - get_cumulative_minus_binomial_probability(single_trial_success_probability, index, target_successes)
+		# probability to reach the target with exactly this amount of trials
+		prob = probability_fn(index)
+		# sum of values multiplied by their probabilities would give us average amount of trials
 		result += (prob - last_prob) * index
 		index += 1
 	return result
 
 
-def find_single_trial_probability_by_average_trials(target_successes, target_average_trials_count, max_error):
-	search_function = lambda a : find_average(a, target_successes, max_error)
+def find_average(single_success_probability, target_successes):
+	return target_successes / single_success_probability
+	# more complicated way to calculate the same
+	# return find_average_probability(lambda i : 1.0 - get_cumulative_minus_binomial_probability(single_success_probability, i, target_successes), 0.00001)
+
+
+def find_single_trial_probability_by_average_trials(target_successes, target_average_trials_count):
+	search_function = lambda a : find_average(a, target_successes)
 	return find_probability_with_function(search_function, target_average_trials_count, 1.0, 1.0)
