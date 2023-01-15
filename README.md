@@ -73,9 +73,10 @@ result
 
 ![Screenshot from 2023-01-15 17-54-30](https://user-images.githubusercontent.com/24990031/212554792-723680d3-3cfb-48bb-8330-336f60cfa4fc.png)
 
-### Documentation
-
+### Notes
 
 Each command can be called with `--help` to see info about specific options.
 
 There is also a possibility to put options into a json file not to repeat them and pass a config using option `--config config.json`.
+
+To plot graphs, you need `plotly` to be instealled: `pip install plotly`
