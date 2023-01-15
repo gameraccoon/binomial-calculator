@@ -45,10 +45,9 @@ def read_arguments(help, meaningful_arguments, mandatory_arguments):
 			exit(1)
 
 	terminal_width = os.get_terminal_size().columns
+	script_name = os.path.splitext(sys.argv[0])[0]
 	arg_map = build_arg_map()
 	if "help" in arg_map:
-		script_name = os.path.splitext(sys.argv[0])[0]
-
 		print(textwrap.fill(help, terminal_width))
 		print("\nUsage:")
 		print("  {} --config <path>".format(script_name))
@@ -93,18 +92,20 @@ def read_arguments(help, meaningful_arguments, mandatory_arguments):
 	is_correct = True
 	for arg in arg_map:
 		if not arg in arguments_map:
-			print("Unknown option '{}', use --help to see the list of available options".format(arg))
+			print("Unknown option '{}'".format(arg))
 			is_correct = False
 		elif not arg in meaningful_arguments:
-			print("Argument '{}' doesn't make sense in context of this script, use --help to see the list of available options".format(arg))
+			print("Option '{}' doesn't make sense in context of this script".format(arg))
 			is_correct = False
-	for mandatory_arg in mandatory_arguments:
-		if not mandatory_arg in arg_map:
-			print("Missing mandatory argument '--{}' refer to --help for more details".format(mandatory_arg))
-			is_correct = False
+	if is_correct:
+		for mandatory_arg in mandatory_arguments:
+			if not mandatory_arg in arg_map:
+				print("Missing mandatory option '--{}'".format(mandatory_arg))
+				is_correct = False
 
 
 	if not is_correct:
+		print("See '{} --help' for more info".format(script_name))
 		return None
 
 	return read_from_data(arg_map)

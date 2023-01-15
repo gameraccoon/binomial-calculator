@@ -45,3 +45,4 @@ def print_found_probability(check_type, trials_count, number_of_successes, targe
 
 	print(text.format(target = target_probability, relation = relation_text, successes = number_of_successes, trials = trials_count, result = found_probability))
 	print_probabilities(found_probability, trials_count, number_of_successes)
+

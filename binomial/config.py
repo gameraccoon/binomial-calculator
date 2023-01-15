@@ -25,16 +25,16 @@ class ArgumentData:
 
 
 arguments_map = {
-    "single_success_probability": ArgumentData("sp", "Success probability of a single trial"),
+    "single_success_probability": ArgumentData("ssp", "Success probability of a single trial"),
     "max_successes": ArgumentData("ms", "Amount of successes we're targeting to reach"),
     "cap_at_max": ArgumentData("cap", "Set if we can't reach more successes than max_successes"),
     "time_units": ArgumentData("tu", "Time unit to measure in, e.g. 'sec'"),
     "trials_per_time_unit": ArgumentData("tptu", "How many trials can happen per time unit e.g. '--tptu 0.5', time units will not be used if this value is not specified"),
     "max_trials_or_time": ArgumentData("mt", "Max trials or time we need to account for"),
-    "target_trials_or_time": ArgumentData("tgt", "How many trials we're interested in"),
+    "target_trials_or_time": ArgumentData("tt", "How many trials we're interested in"),
     "target_probability": ArgumentData("tp", "Target probability that we are aiming for"),
     "graph_type": ArgumentData("gt", "Graph type: 'line' or 'area'"),
-    "percentiles": ArgumentData("pct", "Comma-separated list of percentiles (in percent) to calculate, e.g. '--pct 25,50,75'"),
+    "percentiles": ArgumentData("pc", "Comma-separated list of percentiles (in percent) to calculate, e.g. '--pct 25,50,75'"),
 }
 
 short_arguments_map = {}
@@ -82,3 +82,14 @@ def read_config(path):
     except:
         print("Can't open config file '{}'".format(path))
         return None
+
+
+def pretty_format_time(value, config):
+    measure_in_time = config.trials_per_time_unit != 0.0
+    time_mult = 1.0 / config.trials_per_time_unit if measure_in_time else 1
+    time_label = config.time_units if measure_in_time else "trials";
+
+    mult_value = value * time_mult
+    if mult_value == int(mult_value):
+        return "{} {}".format(int(mult_value), time_label)
+    return "{} {}".format(round(mult_value, 2), time_label)

@@ -8,8 +8,8 @@ import time
 
 config = read_arguments(
 	"Plots graphs of probabilities to get to specific number of successes as function of trials/time",
-	["max_trials_or_time", "max_successes", "single_success_probability", "target_trials_or_time", "cap_at_max", "graph_type", "time_units", "trials_per_time_unit", "percentiles"],
-	{"max_trials_or_time": "int_value", "max_successes": "int_value", "single_success_probability" : "float_value", "target_trials_or_time": "int_value"}
+	["max_trials_or_time", "max_successes", "cap_at_max", "single_success_probability", "graph_type", "time_units", "trials_per_time_unit", "percentiles"],
+	{"max_trials_or_time": "int_value", "max_successes": "int_value", "single_success_probability" : "float_value"}
 )
 if config == None:
 	exit()

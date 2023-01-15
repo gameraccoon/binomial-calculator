@@ -48,23 +48,13 @@ while next_percentile_to_update != percentiles_count:
 
 avg = int(round(find_average(single_success_probability, target_successes)))
 
-measure_in_time = config.trials_per_time_unit != 0.0
-time_label = config.time_units if measure_in_time else "trials";
-time_mult = 1.0 / config.trials_per_time_unit if measure_in_time else 1
-
-def pretty_format_time(value):
-	mult_value = value * time_mult
-	if mult_value == int(mult_value):
-		return int(mult_value)
-	return round(mult_value, 2)
-
-print("On average {} {} are needed to reach {} successes with single trial success probability of {}".format(pretty_format_time(avg), time_label, target_successes, single_success_probability))
+print("On average {} are needed to reach {} successes with single trial success probability of {}".format(pretty_format_time(avg, config), target_successes, single_success_probability))
 
 for i in range(0, percentiles_count):
 	percentile = config.percentiles[i]
 	if percentile == 0.5:
-		print("In about half of cases {} successes will be acheived in {} {} or more".format(target_successes, pretty_format_time(percentile_values[i]), time_label))
+		print("In about half of cases {} successes will be acheived in {} or more".format(target_successes, pretty_format_time(percentile_values[i], config)))
 	elif percentile < 0.5:
-		print("In about {}% of cases, {} successes will be acheived in {} {} or less".format(int(round(percentile * 100)), target_successes, pretty_format_time(percentile_values[i]), time_label))
+		print("In about {}% of cases, {} successes will be acheived in {} or less".format(int(round(percentile * 100)), target_successes, pretty_format_time(percentile_values[i], config)))
 	else:
-		print("In about {}% of cases, {} successes will be acheived in {} {} or more".format(100 - int(round(percentile * 100)), target_successes, pretty_format_time(percentile_values[i]), time_label))
+		print("In about {}% of cases, {} successes will be acheived in {} or more".format(100 - int(round(percentile * 100)), target_successes, pretty_format_time(percentile_values[i], config)))
