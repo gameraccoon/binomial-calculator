@@ -104,5 +104,7 @@ def find_average(single_success_probability, target_successes):
 
 
 def find_single_trial_probability_by_average_trials(target_successes, target_average_trials_count):
-	search_function = lambda a : find_average(a, target_successes)
-	return find_probability_with_function(search_function, target_average_trials_count, 1.0, 1.0)
+	return target_successes / target_average_trials_count
+	# more complicated way to calculate the same
+	# search_function = lambda a : find_average(a, target_successes)
+	# return find_probability_with_function(search_function, target_average_trials_count, 0.0, 1.0)
