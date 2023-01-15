@@ -1,23 +1,17 @@
 #!/usr/bin/python3
 
-print("import dependencies")
-
 from array import array
+from binomial.arguments_reader import *
 from binomial.calculate import *
-from binomial.config import *
-import plotly.express as px
 import sys
 
-print("read configs")
-
-config_path = "config.json"
-
-# read parameters
-if len(sys.argv) > 1:
-	config_path = sys.argv[1]
-
-config = read_config(config_path)
-
+config = read_arguments(
+	"Plots a graph of probabilities to reach the desired amount of successes on a specific trial (or a moment of time)",
+	["max_trials_or_time", "max_successes", "single_success_probability", "target_trials_or_time", "cap_at_max", "graph_type", "time_units", "trials_per_time_unit", "percentiles"],
+	{"max_trials_or_time": "int_value", "max_successes": "int_value", "single_success_probability" : "float_value", "target_trials_or_time": "int_value"}
+)
+if config == None:
+	exit()
 
 percentiles_count = len(config.percentiles)
 percentile_values = [-1] * percentiles_count
@@ -38,8 +32,11 @@ def update_percentile_values(prev_value, current_value, index):
 # default parameters
 trials = config.max_trials
 max_successes = config.max_successes
-single_trial_success_probability = config.single_trial_success_probability
-measure_in_time = config.measure_in_time
+single_success_probability = config.single_success_probability
+measure_in_time = config.trials_per_time_unit != 0.0
+
+print("import plotly")
+import plotly.express as px
 
 print("calculate plot data")
 
@@ -49,7 +46,7 @@ for step_idx in range(0, max_successes):
 	raw_data.append(0.0)
 last_step_probability = 0.0
 for step_idx in range(max_successes, trials + 1):
-	this_step_probability = 1.0 - get_cumulative_minus_binomial_probability(single_trial_success_probability, step_idx, max_successes)
+	this_step_probability = 1.0 - get_cumulative_minus_binomial_probability(single_success_probability, step_idx, max_successes)
 	raw_data.append(this_step_probability - last_step_probability)
 
 	update_percentile_values(last_step_probability, this_step_probability, step_idx)
@@ -58,7 +55,7 @@ for step_idx in range(max_successes, trials + 1):
 
 print("calculate average")
 
-avg = int(round(find_average(single_trial_success_probability, max_successes, 0.00001)))
+avg = int(round(find_average(single_success_probability, max_successes)))
 
 print("prepare plot data")
 
@@ -69,7 +66,7 @@ for line_idx in range(0, trials + 1):
 	data["time"].append(line_idx * x_mult)
 
 labels = {"index":"trial", "value":"probability", "time":x_label}
-title = "Probability to reach {} successes on a given trial (single trial success probability is {})".format(max_successes, single_trial_success_probability)
+title = "Probability to reach {} successes on a given trial (single trial success probability is {})".format(max_successes, single_success_probability)
 
 fig = px.line(data, x="time", y="probabilities", labels=labels, title=title)
 

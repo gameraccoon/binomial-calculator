@@ -2,18 +2,20 @@
 
 import sys
 import random
+from binomial.arguments_reader import *
 from binomial.calculate import *
 
-successes = 2
-target_trials = 4
-max_error = 0.00001
+config = read_arguments(
+	"Finds single trial success probability that is needed to achieve the given amount of successes on average with the given amount of trials",
+	["max_successes", "target_trials_or_time"],
+	{"max_successes": "int_value", "target_trials_or_time": "int_value"}
+)
+if config == None:
+	exit()
 
-if len(sys.argv) > 2:
-	successes = int(sys.argv[1])
-	target_trials = int(sys.argv[2])
-	if len(sys.argv) > 3:
-		max_error = float(sys.argv[3])
+successes = config.max_successes
+target_trials = config.target_trials
 
-single_trial_success_probability = find_single_trial_probability_by_average_trials(successes, target_trials, max_error)
+single_success_probability = find_single_trial_probability_by_average_trials(successes, target_trials)
 
-print("To have {} successes {} trials are needed on average if single trial success probability is {}".format(successes, target_trials, single_trial_success_probability))
+print("{} trials are needed on average to achieve {} successes if a single trial success probability is {}".format(successes, target_trials, single_success_probability))

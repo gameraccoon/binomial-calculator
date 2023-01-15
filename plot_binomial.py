@@ -1,32 +1,29 @@
 #!/usr/bin/python3
 
-print("import dependencies")
-
 from array import array
+from binomial.arguments_reader import *
 from binomial.calculate import *
-from binomial.config import *
-import plotly.express as px
 import sys
 import time
 
-print("read configs")
-
-config_path = "config.json"
-
-# read parameters
-if len(sys.argv) > 1:
-	config_path = sys.argv[1]
-
-config = read_config(config_path)
+config = read_arguments(
+	"Plots graphs of probabilities to get to specific number of successes as function of trials/time",
+	["max_trials_or_time", "max_successes", "single_success_probability", "target_trials_or_time", "cap_at_max", "graph_type", "time_units", "trials_per_time_unit", "percentiles"],
+	{"max_trials_or_time": "int_value", "max_successes": "int_value", "single_success_probability" : "float_value", "target_trials_or_time": "int_value"}
+)
+if config == None:
+	exit()
 
 # default parameters
 trials = config.max_trials
 max_successes = config.max_successes
-single_trial_success_probability = config.single_trial_success_probability
+single_success_probability = config.single_success_probability
 cap_at_max = config.cap_at_max
 graph_type = config.graph_type
-measure_in_time = config.measure_in_time
+measure_in_time = config.trials_per_time_unit != 0.0
 
+print("import plotly")
+import plotly.express as px
 
 print("calculate plot data")
 
@@ -45,7 +42,7 @@ for line_idx in range(0, last_iteration_idx + 1):
 	for step_idx in range(0, line_idx):
 		raw_data[line_idx].append(0.0)
 	for step_idx in range(line_idx, trials + 1):
-		raw_data[line_idx].append(get_binomial_probability(single_trial_success_probability, step_idx, line_idx))
+		raw_data[line_idx].append(get_binomial_probability(single_success_probability, step_idx, line_idx))
 
 # if needed, set last success values with cumulative values for "at least" instead of "exactly"
 if cap_at_max:
@@ -53,7 +50,7 @@ if cap_at_max:
 	for step_idx in range(0, max_successes):
 		raw_data[max_successes].append(0.0)
 	for step_idx in range(max_successes, trials + 1):
-		raw_data[max_successes].append(1.0 - get_cumulative_minus_binomial_probability(single_trial_success_probability, step_idx, max_successes))
+		raw_data[max_successes].append(1.0 - get_cumulative_minus_binomial_probability(single_success_probability, step_idx, max_successes))
 
 print("Time spent on calculating data:", time.time() - time_start)
 
@@ -82,7 +79,7 @@ print("draw plot")
 
 # draw
 labels = {"index":"trial", "value":"probability", "time":(config.time_units if measure_in_time else "trials")}
-title = "Probability to have specific number of successes per trials (single trial success probability is {})".format(single_trial_success_probability)
+title = "Probability to have specific number of successes per trials (single trial success probability is {})".format(single_success_probability)
 if graph_type == "line":
 	fig = px.line(data, x="time", y=plots, labels=labels, title=title)
 elif graph_type == "area":
