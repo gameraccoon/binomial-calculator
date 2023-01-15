@@ -1,6 +1,6 @@
 A small set of functions to calculate, plot and compare probabilities
 
-### Find a probability of a chest containing a piece of map, so that on average a player needs to spend 10 minutes to find at least 9 pieces of map if on average the player opens 2 new chests per minute
+### Find a probability of a chest containing a piece of map, so that on average a player needs to spend 10 minutes to find at least 9 pieces of map if the player opens 2 new chests per minute
 
 ```
 python find_single_trial_probability_by_average_trials_to_success.py --max_successes 9 --target_trials_or_time 10 --trials_per_time_unit 2.0 --time_units minutes
