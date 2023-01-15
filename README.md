@@ -1,6 +1,6 @@
-A small set of functions to calculate, plot and compare probabilities
+A small set of functions to calculate, plot, and compare probabilities
 
-### Find a probability of a chest containing a piece of map, so that on average a player needs to spend 10 minutes to find at least 9 pieces of map if the player opens 2 new chests per minute
+### Find the probability of a chest containing a piece of map, so that on average a player needs to spend 10 minutes to find at least 9 pieces of map if a player opens 2 new chests per minute
 
 ```
 python find_single_trial_probability_by_average_trials_to_success.py --max_successes 9 --target_trials_or_time 10 --trials_per_time_unit 2.0 --time_units minutes
@@ -41,7 +41,7 @@ In about 25% of cases, 9 successes will be acheived in 11 minutes or more
 In about 5% of cases, 9 successes will be acheived in 14.5 minutes or more
 ```
 
-### Print a graph visualizing groups of players found at least specific amount of maps in chests, if a player opens 2 new chests on average and probability of finding a map in a chest is 0.45
+### Plot a graph visualizing groups of players found at least specific amount of maps in chests, distributed by time, if a player opens 2 new chests per minute and probability of finding a map in a chest is 0.45
 
 ```
 python plot_binomial.py --single_success_probability 0.45 --max_successes 9 --cap_at_max --trials_per_time_unit 2.0 --time_units minutes  --max_trials_or_time 20 --graph_type area
@@ -57,7 +57,7 @@ result
 
 ![Screenshot from 2023-01-15 17-32-08](https://user-images.githubusercontent.com/24990031/212554140-d02c7dd1-7225-4109-b7bf-bc3150609480.png)
 
-### Print graph of chances to get 9th map per opening a new chest, distributed by minutes, if a player opens 2 new chests per minute and probability to find map in a chest is 0.45
+### Plot a graph of probabilities to get the 9th map per opening a new chest, distributed by time, if a player opens 2 new chests per minute and probability to find a piece of map in a chest is 0.45
 
 ```
 python plot_trials_to_success.py --max_trials_or_time 20 --max_successes 9 --single_success_probability 0.45 --trials_per_time_unit 2.0 --time_units minutes --percentiles 5,25,50,75,95
@@ -79,4 +79,4 @@ Each command can be called with `--help` to see info about specific options.
 
 There is also a possibility to put options into a json file not to repeat them and pass a config using option `--config config.json`.
 
-To plot graphs, you need `plotly` to be instealled: `pip install plotly`
+To plot graphs, you need `plotly` to be installed: `pip install plotly`
