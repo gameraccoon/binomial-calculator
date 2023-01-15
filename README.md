@@ -66,7 +66,7 @@ python plot_trials_to_success.py --max_trials_or_time 20 --max_successes 9 --sin
 or
 
 ```
-python3 plot_trials_to_success.py --mt 20 --ms 9 --ssp 0.45 --tptu 2.0 --tu minutes --pc 5,25,50,75,95
+python plot_trials_to_success.py --mt 20 --ms 9 --ssp 0.45 --tptu 2.0 --tu minutes --pc 5,25,50,75,95
 ```
 
 result
