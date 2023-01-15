@@ -60,7 +60,7 @@ def read_from_data(data):
 
     if result.trials_per_time_unit != 0.0:
         result.max_trials = int(round(result.max_trials * result.trials_per_time_unit))
-        result.target_trials = int(math.ceil(result.max_trials * result.trials_per_time_unit))
+        result.target_trials = int(math.ceil(result.target_trials * result.trials_per_time_unit))
 
     if isinstance(result.percentiles, str):
         result.percentiles = result.percentiles.split(",")

@@ -7,7 +7,7 @@ from binomial.calculate import *
 
 config = read_arguments(
 	"Finds single trial success probability that is needed to achieve the given amount of successes on average with the given amount of trials",
-	["max_successes", "target_trials_or_time"],
+	["max_successes", "target_trials_or_time", "trials_per_time_unit"],
 	{"max_successes": "int_value", "target_trials_or_time": "int_value"}
 )
 if config == None:

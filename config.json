@@ -1,9 +1,9 @@
 {
-	"max_successes": 10,
 	"single_success_probability": 0.33333333,
+	"max_successes": 7,
 	"cap_at_max": true,
 	"time_units": "minutes",
-	"trials_per_time_unit": 0.5,
+	"trials_per_time_unit": 0.878863337,
 	"max_trials_or_time": 60,
 	"target_trials_or_time": 140,
 	"target_probability": 0.5,

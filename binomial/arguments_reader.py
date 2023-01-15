@@ -35,6 +35,15 @@ def get_argument_names(argument, argument_data):
 
 
 def read_arguments(help, meaningful_arguments, mandatory_arguments):
+	# validate requirements
+	for arg in mandatory_arguments:
+		if arg not in meaningful_arguments:
+			print("Argument '{}' marked as mandatory but it is not in the list of meaningful arguments".format(arg))
+			exit(1)
+		if arg not in arguments_map:
+			print("Argument '{}' is not part of config.py".format(arg))
+			exit(1)
+
 	terminal_width = os.get_terminal_size().columns
 	arg_map = build_arg_map()
 	if "help" in arg_map:
@@ -85,6 +94,9 @@ def read_arguments(help, meaningful_arguments, mandatory_arguments):
 	for arg in arg_map:
 		if not arg in arguments_map:
 			print("Unknown option '{}', use --help to see the list of available options".format(arg))
+			is_correct = False
+		elif not arg in meaningful_arguments:
+			print("Argument '{}' doesn't make sense in context of this script, use --help to see the list of available options".format(arg))
 			is_correct = False
 	for mandatory_arg in mandatory_arguments:
 		if not mandatory_arg in arg_map:
