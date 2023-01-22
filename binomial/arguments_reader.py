@@ -5,6 +5,7 @@ import sys
 import textwrap
 from binomial.config import *
 
+extra_arguments = ["help", "config"]
 
 def build_arg_map():
 	arg_map = {}
@@ -35,6 +36,8 @@ def get_argument_names(argument, argument_data):
 
 
 def read_arguments(help, meaningful_arguments, mandatory_arguments):
+	config: Config = None
+
 	# validate requirements
 	for arg in mandatory_arguments:
 		if arg not in meaningful_arguments:
@@ -76,7 +79,7 @@ def read_arguments(help, meaningful_arguments, mandatory_arguments):
 			print(argument_description)
 		return None
 	elif "config" in arg_map:
-		return read_config(arg_map["config"])
+		config = read_config(arg_map["config"])
 
 	# replace short codes with full ones
 	while True:
@@ -91,13 +94,13 @@ def read_arguments(help, meaningful_arguments, mandatory_arguments):
 	# validate arguments
 	is_correct = True
 	for arg in arg_map:
-		if not arg in arguments_map:
+		if not arg in arguments_map and (config == None or not arg in extra_arguments):
 			print("Unknown option '{}'".format(arg))
 			is_correct = False
-		elif not arg in meaningful_arguments:
+		elif not arg in meaningful_arguments and (config == None or not arg in extra_arguments):
 			print("Option '{}' doesn't make sense in context of this script".format(arg))
 			is_correct = False
-	if is_correct:
+	if is_correct and config == None:
 		for mandatory_arg in mandatory_arguments:
 			if not mandatory_arg in arg_map:
 				print("Missing mandatory option '--{}'".format(mandatory_arg))
@@ -108,4 +111,4 @@ def read_arguments(help, meaningful_arguments, mandatory_arguments):
 		print("See '{} --help' for more info".format(script_name))
 		return None
 
-	return read_from_data(arg_map)
+	return read_from_data(config, arg_map)

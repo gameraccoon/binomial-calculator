@@ -16,6 +16,7 @@ class Config:
     target_probability: float = 0.0
     graph_type: str = "line" # "line" or "area"
     percentiles = []
+    reference_config_path: str = ""
 
 
 @dataclass
@@ -35,6 +36,7 @@ arguments_map = {
     "target_probability": ArgumentData("tp", "Target probability that we are aiming for"),
     "graph_type": ArgumentData("gt", "Graph type: 'line' or 'area'"),
     "percentiles": ArgumentData("pc", "Comma-separated list of percentiles (in percent) to calculate, e.g. '--pct 25,50,75'"),
+    "reference_config": ArgumentData("rc", "Path to configuration that we want to compare to"),
 }
 
 short_arguments_map = {}
@@ -44,19 +46,21 @@ for arg in arguments_map:
         short_arguments_map[short_arg] = arg
 
 
-def read_from_data(data):
-    result = Config()
+def read_from_data(result, data):
+    if result == None:
+        result = Config()
 
-    result.cap_at_max = bool(data.get("cap_at_max", Config.cap_at_max))
-    result.single_success_probability = float(data.get("single_success_probability", Config.single_success_probability))
-    result.max_successes = int(data.get("max_successes", Config.max_successes))
-    result.time_units = data.get("time_units", Config.time_units)
-    result.trials_per_time_unit = float(data.get("trials_per_time_unit", Config.trials_per_time_unit))
-    result.max_trials = int(data.get("max_trials_or_time", Config.max_trials))
-    result.target_trials = int(data.get("target_trials_or_time", Config.target_trials))
-    result.target_probability = float(data.get("target_probability", Config.target_probability))
-    result.graph_type = data.get("graph_type", Config.graph_type)
-    result.percentiles = data.get("percentiles", Config.percentiles)
+    result.cap_at_max = bool(data.get("cap_at_max", result.cap_at_max))
+    result.single_success_probability = float(data.get("single_success_probability", result.single_success_probability))
+    result.max_successes = int(data.get("max_successes", result.max_successes))
+    result.time_units = data.get("time_units", result.time_units)
+    result.trials_per_time_unit = float(data.get("trials_per_time_unit", result.trials_per_time_unit))
+    result.max_trials = int(data.get("max_trials_or_time", result.max_trials))
+    result.target_trials = int(data.get("target_trials_or_time", result.target_trials))
+    result.target_probability = float(data.get("target_probability", result.target_probability))
+    result.graph_type = data.get("graph_type", result.graph_type)
+    result.percentiles = data.get("percentiles", result.percentiles)
+    result.reference_config_path = data.get("reference_config", result.reference_config_path)
 
     if result.trials_per_time_unit != 0.0:
         result.max_trials = int(round(result.max_trials * result.trials_per_time_unit))
@@ -78,16 +82,16 @@ def read_config(path):
     try:
         with open(path, 'r') as f:
             data = json.load(f)
-            return read_from_data(data)
+            return read_from_data(None, data)
     except:
         print("Can't open config file '{}'".format(path))
         return None
 
 
-def pretty_format_time(value, config):
-    measure_in_time = config.trials_per_time_unit != 0.0
-    time_mult = 1.0 / config.trials_per_time_unit if measure_in_time else 1
-    time_label = config.time_units if measure_in_time else "trials";
+def pretty_format_time(value, cfg):
+    measure_in_time = cfg.trials_per_time_unit != 0.0
+    time_mult = 1.0 / cfg.trials_per_time_unit if measure_in_time else 1
+    time_label = cfg.time_units if measure_in_time else "trials";
 
     mult_value = value * time_mult
     if mult_value == int(mult_value):
