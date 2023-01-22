@@ -7,8 +7,8 @@ import sys
 
 config = read_arguments(
 	"Plots a graph of probabilities to reach the desired amount of successes on a specific trial (or a moment of time)",
-	["max_trials_or_time", "max_successes", "single_success_probability", "target_trials_or_time", "cap_at_max", "graph_type", "time_units", "trials_per_time_unit", "percentiles"],
-	{"max_trials_or_time": "int_value", "max_successes": "int_value", "single_success_probability" : "float_value", "target_trials_or_time": "int_value"}
+	["max_trials_or_time", "max_successes", "single_success_probability", "time_units", "trials_per_time_unit", "percentiles"],
+	{"max_trials_or_time": "int_value", "max_successes": "int_value", "single_success_probability" : "float_value"}
 )
 if config == None:
 	exit()
@@ -61,14 +61,14 @@ print("prepare plot data")
 
 x_label = config.time_units if measure_in_time else "trials";
 x_mult = 1.0 / config.trials_per_time_unit if measure_in_time else 1
-data = {"probabilities" : raw_data.tolist(), "time": []}
+data = {"probability" : raw_data.tolist(), "time": []}
 for line_idx in range(0, trials + 1):
 	data["time"].append(line_idx * x_mult)
 
 labels = {"index":"trial", "value":"probability", "time":x_label}
 title = "Probability to reach {} successes on a given trial (single trial success probability is {})".format(max_successes, single_success_probability)
 
-fig = px.line(data, x="time", y="probabilities", labels=labels, title=title)
+fig = px.line(data, x="time", y="probability", labels=labels, title=title)
 
 for i in range(0, percentiles_count):
 	percentile = config.percentiles[i]
