@@ -18,6 +18,8 @@ class Config:
     percentiles = []
     reference_config_path: str = ""
 
+    needs_first_time_conversion: bool = True
+
 
 @dataclass
 class ArgumentData:
@@ -62,14 +64,17 @@ def read_from_data(result, data):
     result.percentiles = data.get("percentiles", result.percentiles)
     result.reference_config_path = data.get("reference_config", result.reference_config_path)
 
-    if result.trials_per_time_unit != 0.0:
-        result.max_trials = int(round(result.max_trials * result.trials_per_time_unit))
-        result.target_trials = int(math.ceil(result.target_trials * result.trials_per_time_unit))
+    if result.needs_first_time_conversion:
+        result.needs_first_time_conversion = False
 
-    if isinstance(result.percentiles, str):
-        result.percentiles = result.percentiles.split(",")
-    for i in range(0, len(result.percentiles)):
-        result.percentiles[i] = float(result.percentiles[i]) * 0.01
+        if result.trials_per_time_unit != 0.0:
+            result.max_trials = int(round(result.max_trials * result.trials_per_time_unit))
+            result.target_trials = int(math.ceil(result.target_trials * result.trials_per_time_unit))
+
+        if isinstance(result.percentiles, str):
+            result.percentiles = result.percentiles.split(",")
+        for i in range(0, len(result.percentiles)):
+            result.percentiles[i] = float(result.percentiles[i]) * 0.01
 
     return result
 
