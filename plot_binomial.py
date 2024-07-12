@@ -8,7 +8,7 @@ import time
 
 config = read_arguments(
 	"Plots graphs of probabilities to get to specific number of successes as function of trials/time",
-	["max_trials_or_time", "max_successes", "cap_at_max", "single_success_probability", "graph_type", "time_units", "trials_per_time_unit", "reference_config"],
+	["max_trials_or_time", "max_successes", "cap_at_max", "single_success_probability", "graph_type", "graph_step", "time_units", "trials_per_time_unit", "reference_config"],
 	{"max_trials_or_time": "int_value", "max_successes": "int_value", "single_success_probability" : "float_value"}
 )
 if config == None:
@@ -44,6 +44,9 @@ time_start = time.time()
 def calculate_raw_plot_data(cfg):
 	result = []
 
+	step = cfg.graph_step
+	print(step)
+
 	# init empty arrays
 	for line_idx in range(0, cfg.max_successes + 1):
 		result.append(array('f'))
@@ -52,17 +55,17 @@ def calculate_raw_plot_data(cfg):
 	last_iteration_idx = cfg.max_successes - 1 if cfg.cap_at_max else cfg.max_successes
 	for line_idx in range(0, last_iteration_idx + 1):
 		print("calculating success #{}".format(line_idx))
-		for step_idx in range(0, line_idx):
+		for step_idx in range(0, line_idx, step):
 			result[line_idx].append(0.0)
-		for step_idx in range(line_idx, cfg.max_trials + 1):
+		for step_idx in range(step * math.ceil(line_idx / step), cfg.max_trials + 1, step):
 			result[line_idx].append(get_binomial_probability(cfg.single_success_probability, step_idx, line_idx))
 
 	# if needed, set last success values with cumulative values for "at least" instead of "exactly"
 	if cfg.cap_at_max:
 		print("calculating success #{}".format(cfg.max_successes))
-		for step_idx in range(0, cfg.max_successes):
+		for step_idx in range(0, cfg.max_successes, step):
 			result[cfg.max_successes].append(0.0)
-		for step_idx in range(cfg.max_successes, cfg.max_trials + 1):
+		for step_idx in range(step * math.ceil(cfg.max_successes / step), cfg.max_trials + 1, step):
 			result[cfg.max_successes].append(1.0 - get_cumulative_minus_binomial_probability(cfg.single_success_probability, step_idx, cfg.max_successes))
 
 	return result
@@ -95,8 +98,8 @@ def generate_plolty_data(cfg, raw, suffix = ""):
 		plots.append(step_name + suffix)
 
 	plotly_data["time"] = []
-	for line_idx in range(0, cfg.max_trials + 1):
-		plotly_data["time"].append(line_idx / cfg.trials_per_time_unit if measure_in_time else line_idx)
+	for line_idx in range(0, cfg.max_trials + 1, cfg.graph_step):
+		plotly_data["time"].append((line_idx / cfg.trials_per_time_unit if measure_in_time else line_idx))
 	return plotly_data, plots
 
 data, plots = generate_plolty_data(config, raw_data)

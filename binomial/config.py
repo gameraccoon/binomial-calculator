@@ -15,6 +15,7 @@ class Config:
     target_trials_or_time: int = 0
     target_probability: float = 0.0
     graph_type: str = "line" # "line" or "area"
+    graph_step: int = 1
     percentiles = []
     reference_config_path: str = ""
 
@@ -38,6 +39,7 @@ arguments_map = {
     "target_trials_or_time": ArgumentData("tt", "How many trials we're interested in"),
     "target_probability": ArgumentData("tp", "Target probability that we are aiming for"),
     "graph_type": ArgumentData("gt", "Graph type: 'line' or 'area'"),
+    "graph_step": ArgumentData("gs", "The bigger the integer value the more impercise the graph becomes, 1 is the max precision"),
     "percentiles": ArgumentData("pc", "Comma-separated list of percentiles (in percent) to calculate, e.g. '--pct 25,50,75'"),
     "reference_config": ArgumentData("rc", "Path to configuration that we want to compare to"),
 }
@@ -62,6 +64,7 @@ def read_from_data(result, data):
     result.target_trials_or_time = int(data.get("target_trials_or_time", result.target_trials_or_time))
     result.target_probability = float(data.get("target_probability", result.target_probability))
     result.graph_type = data.get("graph_type", result.graph_type)
+    result.graph_step = int(data.get("graph_step", result.graph_step))
     result.percentiles = data.get("percentiles", result.percentiles)
     result.reference_config_path = data.get("reference_config", result.reference_config_path)
 

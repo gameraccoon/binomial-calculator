@@ -8,5 +8,6 @@
 	"target_trials_or_time": 140,
 	"target_probability": 0.5,
 	"graph_type": "line",
+	"graph_step": 1,
 	"percentiles": [1, 5, 25, 50, 75, 95, 99]
 }
