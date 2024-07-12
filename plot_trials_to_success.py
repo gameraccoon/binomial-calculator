@@ -19,7 +19,7 @@ next_percentile_to_update = 0
 def update_percentile_values(prev_value, current_value, index):
 	global next_percentile_to_update
 	for i in range(next_percentile_to_update, percentiles_count):
-		percentile = config.percentiles[i]
+		percentile = config.percentiles[i] * 0.01
 		if current_value > percentile:
 			percentile_values[i] = index if current_value - percentile < percentile - prev_value else index - 1
 			next_percentile_to_update = i + 1
@@ -71,7 +71,7 @@ title = "Probability to reach {} successes on a given trial (single trial succes
 fig = px.line(data, x="time", y="probability", labels=labels, title=title)
 
 for i in range(0, percentiles_count):
-	percentile = config.percentiles[i]
+	percentile = config.percentiles[i] * 0.01
 	x_value = percentile_values[i]*x_mult
 	if x_value < 0.0:
 		continue

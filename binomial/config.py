@@ -11,14 +11,15 @@ class Config:
     cap_at_max: bool = False
     time_units: str = "sec"
     trials_per_time_unit: float = 0.0
-    max_trials: int = 0
-    target_trials: int = 0
+    max_trials_or_time: int = 0
+    target_trials_or_time: int = 0
     target_probability: float = 0.0
     graph_type: str = "line" # "line" or "area"
     percentiles = []
     reference_config_path: str = ""
 
-    needs_first_time_conversion: bool = True
+    max_trials: int = 0
+    target_trials: int = 0
 
 
 @dataclass
@@ -57,24 +58,24 @@ def read_from_data(result, data):
     result.max_successes = int(data.get("max_successes", result.max_successes))
     result.time_units = data.get("time_units", result.time_units)
     result.trials_per_time_unit = float(data.get("trials_per_time_unit", result.trials_per_time_unit))
-    result.max_trials = int(data.get("max_trials_or_time", result.max_trials))
-    result.target_trials = int(data.get("target_trials_or_time", result.target_trials))
+    result.max_trials_or_time = int(data.get("max_trials_or_time", result.max_trials_or_time))
+    result.target_trials_or_time = int(data.get("target_trials_or_time", result.target_trials_or_time))
     result.target_probability = float(data.get("target_probability", result.target_probability))
     result.graph_type = data.get("graph_type", result.graph_type)
     result.percentiles = data.get("percentiles", result.percentiles)
     result.reference_config_path = data.get("reference_config", result.reference_config_path)
 
-    if result.needs_first_time_conversion:
-        result.needs_first_time_conversion = False
+    if result.trials_per_time_unit != 0.0:
+        result.max_trials = int(round(result.max_trials_or_time * result.trials_per_time_unit))
+        result.target_trials = int(math.ceil(result.target_trials_or_time * result.trials_per_time_unit))
+    else:
+        result.max_trials = result.max_trials_or_time
+        result.target_trials = result.target_trials_or_time
 
-        if result.trials_per_time_unit != 0.0:
-            result.max_trials = int(round(result.max_trials * result.trials_per_time_unit))
-            result.target_trials = int(math.ceil(result.target_trials * result.trials_per_time_unit))
-
-        if isinstance(result.percentiles, str):
-            result.percentiles = result.percentiles.split(",")
-        for i in range(0, len(result.percentiles)):
-            result.percentiles[i] = float(result.percentiles[i]) * 0.01
+    if isinstance(result.percentiles, str):
+        result.percentiles = result.percentiles.split(",")
+    for i in range(0, len(result.percentiles)):
+        result.percentiles[i] = float(result.percentiles[i])
 
     return result
 

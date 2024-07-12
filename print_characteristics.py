@@ -26,7 +26,7 @@ next_percentile_to_update = 0
 def update_percentile_values(prev_value, current_value, index):
 	global next_percentile_to_update
 	for i in range(next_percentile_to_update, percentiles_count):
-		percentile = config.percentiles[i]
+		percentile = config.percentiles[i] * 0.01
 		if current_value > percentile:
 			percentile_values[i] = index if current_value - percentile < percentile - prev_value else index - 1
 			next_percentile_to_update = i + 1
@@ -51,7 +51,7 @@ avg = int(round(find_average(single_success_probability, target_successes)))
 print("On average {} are needed to reach {} successes with single trial success probability of {}".format(pretty_format_time(avg, config), target_successes, single_success_probability))
 
 for i in range(0, percentiles_count):
-	percentile = config.percentiles[i]
+	percentile = config.percentiles[i] * 0.01
 	if percentile == 0.5:
 		print("In about half of cases {} successes will be acheived in {} or more".format(target_successes, pretty_format_time(percentile_values[i], config)))
 	elif percentile < 0.5:
